@@ -1,0 +1,30 @@
+{
+  "css.validate": false,
+  "docthis.includeMemberOfOnClassMembers": false,
+  "docthis.includeMemberOfOnInterfaceMembers": false,
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "files.associations": {
+    "*.css": "scss"
+  },
+  "html.format.wrapAttributes": "force",
+  "scss.validate": false,
+  "postcssSorting.config": "./.config/postcss.sorting.js",
+  "search.exclude": {
+    "**/node_modules": true,
+    "dist": true,
+    "docs": true
+  },
+  "stylefmt.config": ".config/stylelint.config.js",
+  "stylelint.enable": true,
+  "tslint.autoFixOnSave": true,
+  "tslint.configFile": ".config/tslint.config.js",
+  "tslint.enable": true,
+  "tslint.exclude": [
+    "**/schema.ts",
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.format.insertSpaceBeforeFunctionParenthesis": false,
+  "typescript.format.insertSpaceAfterFunctionKeywordForAnonymousFunctions": false,
+  "editor.tabSize": 2,
+}

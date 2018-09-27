@@ -1,0 +1,19 @@
+.swift-issue {
+  position: float;
+  display: block;
+  margin: 2vr auto;
+  padding: 1vr;
+  max-width: 640px;
+  background-color: white;
+
+  &.capturing {
+    display: none;
+  }
+
+  &--thumbnail {
+    display: block;
+    margin-bottom: 1vr;
+    width: 100%;
+    cursor: pointer;
+  }
+}
