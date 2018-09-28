@@ -1,0 +1,29 @@
+<form class="swift-issue">
+  <h3>Swift Issue</h3>
+
+  <p>Instruktioner lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae debitis earum ipsum corporis
+    libero
+    inventore deserunt cupiditate magni eveniet tempora! Saepe esse nisi laborum officiis optio vel magnam dolore
+    corrupti?</p>
+
+  <label for="swift-issue--topic">Vad handlar det om?</label>
+  <select id="swift-issue--topic"
+    class="swift-issue--topic"
+    name="topic">
+    <%= topics %>
+    <% topics.forEach(topic => { %>
+      <option value="<%= topic.value %>"><%= topic.label %></option>
+    <% }); %>
+  </select>
+
+  <label for="swift-issue--description">Beskriv ärendet</label>
+  <textarea id="swift-issue--description"
+    class="swift-issue--description"
+    name="description"></textarea>
+
+  <img class="swift-issue--thumbnail"
+    src="http://www.pixedelic.com/themes/geode/demo/wp-content/uploads/sites/4/2014/04/placeholder4.png" />
+
+  <button class="swift-issue--submit"
+    type="submit">Send</button>
+</form>

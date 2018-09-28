@@ -9,16 +9,19 @@
   },
   "html.format.wrapAttributes": "force",
   "scss.validate": false,
-  "postcssSorting.config": "./.config/postcss.sorting.js",
+  "postcssSorting.config": ".config/postcss/postcss.sorting.js",
   "search.exclude": {
     "**/node_modules": true,
     "dist": true,
     "docs": true
   },
-  "stylefmt.config": ".config/stylelint.config.js",
+  "stylefmt.config": ".config/postcss/stylelint.config.js",
+  "stylelint.config": {
+    "extends": "./.config/postcss/stylelint.config.js",
+  },
   "stylelint.enable": true,
   "tslint.autoFixOnSave": true,
-  "tslint.configFile": ".config/tslint.config.js",
+  "tslint.configFile": ".config/webpack/tslint.config.js",
   "tslint.enable": true,
   "tslint.exclude": [
     "**/schema.ts",

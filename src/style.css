@@ -6,7 +6,7 @@
   max-width: 640px;
   background-color: white;
 
-  &.capturing {
+  &[aria-busy=true] {
     display: none;
   }
 

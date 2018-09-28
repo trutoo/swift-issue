@@ -1,25 +1,116 @@
-console = (function(console) {
-  let log = console.log;
-  let info = console.info;
-  let debug = console.debug;
-  let warn = console.warn;
-  let error = console.error;
+import * as html2canvas from 'html2canvas';
 
-  console.history = [];
-  console.store = function(type: string, lines: IArguments) {
-    console.history = console.history.concat(
-      Array.from(lines).map((line) => `[${new Date().toTimeString().slice(0, 7)}] ${type}: ${line}`),
-    );
-  };
+import { IClientDetails, IIPDetails } from './interfaces';
+import { Detect } from './utils/detect';
+import { Http } from './utils/http';
 
-  console.log = function() { console.store('log', arguments); log.apply(this, arguments); };
-  console.info = function() { console.store('info', arguments); info.apply(this, arguments); };
-  console.debug = function() { console.store('debug', arguments); debug.apply(this, arguments); };
-  console.warn = function() { console.store('warn', arguments); warn.apply(this, arguments); };
-  console.error = function() { console.store('error', arguments); error.apply(this, arguments); };
+class SwiftIssue {
 
-  return console;
-}(window.console));
+  private form: HTMLFormElement | null = null;
+  private thumbnail: HTMLImageElement | null = null;
+  private previousTarget: HTMLElement | null = null;
+  public topics = [
+    { value: 1, label: 'Bug' },
+    { value: 2, label: 'Feature' },
+    { value: 3, label: 'Style' },
+  ];
 
-//Then redefine the old console
-window.console = console;
+  constructor(
+  ) {
+    /* Bind */
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onCapture = this.onCapture.bind(this);
+    this.onMouseMove = this.onMouseMove.bind(this);
+    this.onMouseClick = this.onMouseClick.bind(this);
+
+    this.form = document.querySelector('.swift-issue');
+    this.thumbnail = document.querySelector('.swift-issue--thumbnail');
+  }
+
+  create() {
+    if (this.form) this.form.addEventListener('submit', this.onSubmit);
+    if (this.thumbnail) this.thumbnail.addEventListener('click', this.onCapture);
+  }
+
+  destroy() {
+    if (this.form) this.form.removeEventListener('submit', this.onSubmit);
+    if (this.thumbnail) this.thumbnail.removeEventListener('click', this.onCapture);
+  }
+
+  /* EVENTS */
+
+  onCapture(event: MouseEvent) {
+    event.stopPropagation();
+    this.capturing = true;
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('click', this.onMouseClick);
+  }
+
+  onMouseMove(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (this.previousTarget)
+      this.previousTarget.style.boxShadow = '';
+    target.style.boxShadow = '0 0 5px 10px rgba(80, 200, 255, 0.3)';
+    this.previousTarget = target;
+  }
+
+  onMouseClick(event: MouseEvent) {
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('click', this.onMouseClick);
+    this.capturing = false;
+
+    const target = event.target as HTMLElement;
+    target.style.boxShadow = '';
+
+    html2canvas(target, {
+      backgroundColor: window.getComputedStyle(document.body, null).getPropertyValue('background-color'),
+    }).then((canvas: HTMLCanvasElement) => {
+      if (this.thumbnail) this.thumbnail.src = canvas.toDataURL();
+    });
+  }
+
+  onSubmit(event: Event) {
+    event.preventDefault();
+    Http.Get('http://ip-api.com/json').then((response: IIPDetails) => {
+      this.clientData(response);
+    });
+  }
+
+  //------------------------------------------------------------------------------------
+  // HELPERS
+  //------------------------------------------------------------------------------------
+
+  clientData(ipDetails: IIPDetails): IClientDetails {
+    return {
+      os: window.navigator.oscpu || window.navigator.platform,
+      browser: Detect.Browser(),
+      userAgent: window.navigator.userAgent,
+      externalIP: ipDetails.query,
+      country: ipDetails.country,
+      region: ipDetails.regionName,
+      city: ipDetails.city,
+      timezone: ipDetails.city,
+      screenSize: { width: window.screen.width, height: window.screen.height },
+      browserSize: { width: window.outerWidth, height: window.outerHeight },
+      documentSize: { width: window.innerWidth, height: window.innerHeight },
+      colorDepth: window.screen.colorDepth,
+      orientation: window.screen.orientation.angle,
+      locale: window.navigator.userLanguage || window.navigator.language,
+      url: window.location.href,
+      logs: [],
+      date: new Date().toString(),
+    };
+  }
+
+  //------------------------------------------------------------------------------------
+  // GETTERS & SETTERS
+  //------------------------------------------------------------------------------------
+
+  private set capturing(state: boolean) {
+    if (this.form) this.form.setAttribute('aria-busy', state.toString());
+  }
+}
+
+const swiftIssue = new SwiftIssue();
+window.addEventListener('DOMContentLoaded', swiftIssue.create);
+window.addEventListener('unload', swiftIssue.destroy);
